@@ -77,12 +77,16 @@ def getCiteULikeJSON(user='user', cookie=None):
     refs = json.loads(jsontext)
     return citeULikeKeys(refs)
 
-
-
-
-
-
-
-
+def getCiteULikeBibTeX(user='user', cookie=None):
+    """
+    Retrieves the BibTeX file from CiteULike and returns a
+    string with the contents. Does not require a cookie.
+        getCiteULikeBibTeX(user='user') -> string
+    """
+    url = 'http://www.citeulike.org/bibtex/'+user
+    if cookie==None:
+        cookie = getCiteULikeCookie()
+    bibText = downloadFile(url, cookie)
+    return bibText
 
 
