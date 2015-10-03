@@ -4,7 +4,7 @@
 # Name        :  citeulike.py
 # Version    :  0.1a
 # Author      :  Lampros Mountrakis (L.Mountrakis hosted-at gmail.com )
-# Description : Simple CiteULike operations. Access granded through Firefox cookies.
+# Description : Simple CiteULike operations. Access granted through Firefox cookies.
 #====================================================================
 import os
 import sys
@@ -153,7 +153,7 @@ def downloadCiteULikePDFs(path2save, user='user', cookie=None):
 if __name__ == '__main__':
     import argparse
 
-    parser = argparse.ArgumentParser(description='Simple CiteULike operations. Access granded through Firefox cookies.')
+    parser = argparse.ArgumentParser(description='Simple CiteULike operations. Access granted through Firefox cookies.')
     parser.add_argument('-u', '--user', dest='user', required=True, \
                 type=str, help='CiteULike username [required]')
 

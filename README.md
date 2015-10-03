@@ -1,6 +1,12 @@
-usage: citeulike.py [-h] -u USER [-j] [-b] [-p] [-o OUTPUT]
+cites-i-like
+============
+Simple command line CiteULike operations. Access granted through Firefox cookies.
 
-Simple CiteULike operations. Access granded through Firefox cookies.
+```javascript
+
+usage: cites-i-like.py [-h] -u USER [-j] [-b] [-p] [-o OUTPUT]
+
+Simple CiteULike operations. Access granted through Firefox cookies.
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -12,3 +18,5 @@ optional arguments:
   -o OUTPUT, --output OUTPUT
                         Path to save CiteULike BibTeX/JSON file
                         [default:./${user}{.json,.bib,_pdf}]
+```
+
