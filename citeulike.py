@@ -74,8 +74,15 @@ def getCiteULikeJSON(user='user', cookie=None):
     if cookie==None:
         cookie = getCiteULikeCookie()
     jsontext = downloadFile(url, cookie)
-    refs = json.loads(jsontext)
-    return citeULikeKeys(refs)
+    return json.loads(jsontext)
+
+def getCiteULikeDictionary(user='user', cookie=None):
+    """
+    Retrieves the JSON list from CiteULike and returns dict structure 
+    based on the citation key. Does not require a cookie.
+        getCiteULikeDictionary(user='user') -> DICTrefs
+    """
+    return citeULikeKeys(getCiteULikeJSON(user, cookie))
 
 def getCiteULikeBibTeX(user='user', cookie=None):
     """
@@ -86,7 +93,65 @@ def getCiteULikeBibTeX(user='user', cookie=None):
     url = 'http://www.citeulike.org/bibtex/'+user
     if cookie==None:
         cookie = getCiteULikeCookie()
-    bibText = downloadFile(url, cookie)
-    return bibText
+    return downloadFile(url, cookie)
+
+def getCiteULikeJSONFile(user='user', cookie=None):
+    """
+    Retrieves the JSON file from CiteULike and returns a
+    string with the contents. Does not require a cookie.
+        getCiteULikeJSONFile(user='user') -> string
+    """
+    url = 'http://www.citeulike.org/json/user/'+user
+    if cookie==None:
+        cookie = getCiteULikeCookie()
+    return downloadFile(url, cookie)
+
+
+
+if __name__ == '__main__':
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Simple CiteULike operations. Access granded through Firefox cookies.')
+    parser.add_argument('-u', '--user', dest='user', required=True, \
+                type=str, help='CiteULike username [required]')
+
+    parser.add_argument('-j', '--json', action='store_true', 
+        default=False, \
+        help='Save CiteULike JSON file [default:./${user}.json]')
+
+    parser.add_argument('-b', '--bibtex', action='store_true', 
+        default=False, \
+        help='Save CiteULike JSON file [default:./${user}.json]')
+
+    parser.add_argument('-o', '--output', dest='output', default=None, \
+                help='Path to save CiteULike BibTeX/JSON file [default:./${user}.{json,bib}]')
+
+    # Read and curate argument
+    args = parser.parse_args()
+    user, bibtexDL, jsonDL, output = args.user, args.bibtex, args.json, args.output
+    if not (bibtexDL or jsonDL):
+        print "No action defined."
+    if output == None:
+        output = './'+user
+    elif output[-5:].split('.')[-1] in ('json', 'bib'):
+        output = output[:-5] + output[-5:].replace('.bib', '').replace('.json', '')
+
+    try:
+        if jsonDL:
+            text_file = open(output + '.json', "w")
+            text_file.write(getCiteULikeJSONFile(user))
+            text_file.close()
+            print 'JSON file saved to', output + '.json'
+        if bibtexDL:
+            text_file = open(output + '.bib', "w")
+            text_file.write(getCiteULikeBibTeX(user))
+            text_file.close()
+            print 'BibTeX file saved to', output + '.bib'
+    except urllib2.HTTPError as e:
+        print e
+    except Exception as e:
+        print 'Something went terribly wrong.. ', e
+    except:
+        print 'Something went terribly wrong.. '
 
 
