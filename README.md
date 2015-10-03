@@ -19,4 +19,3 @@ optional arguments:
                         Path to save CiteULike BibTeX/JSON file
                         [default:./${user}{.json,.bib,_pdf}]
 ```
-
