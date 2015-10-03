@@ -1,4 +1,4 @@
-usage: citeulike.py [-h] -u USER [-j] [-b] [-o OUTPUT]
+usage: citeulike.py [-h] -u USER [-j] [-b] [-p] [-o OUTPUT]
 
 Simple CiteULike operations. Access granded through Firefox cookies.
 
@@ -7,6 +7,8 @@ optional arguments:
   -u USER, --user USER  CiteULike username [required]
   -j, --json            Save CiteULike JSON file [default:./${user}.json]
   -b, --bibtex          Save CiteULike JSON file [default:./${user}.json]
+  -p, --pdf             Save PDF files of a CiteULike account (requires
+                        Firefox cookies). [default:./${user}_pdf/]
   -o OUTPUT, --output OUTPUT
                         Path to save CiteULike BibTeX/JSON file
-                        [default:./${user}.{json,bib}]
+                        [default:./${user}{.json,.bib,_pdf}]

@@ -4,8 +4,7 @@
 # Name        :  citeulike.py
 # Version    :  0.1a
 # Author      :  Lampros Mountrakis (L.Mountrakis hosted-at gmail.com )
-# Date        : 
-# Description : 
+# Description : Simple CiteULike operations. Access granded through Firefox cookies.
 #====================================================================
 import os
 import sys
@@ -106,8 +105,51 @@ def getCiteULikeJSONFile(user='user', cookie=None):
         cookie = getCiteULikeCookie()
     return downloadFile(url, cookie)
 
+def safeDownloadPDF(url, fname, cookie=None):
+    """
+        Downloads files from url to fname.
+    """
+    try:
+        with open(fname) as f: pass
+        return "was already downloaded!"
+    except IOError as e:
+        output = open(fname+'.tmp', 'wb')
+        output.write(downloadFile(url, cookie))
+        output.close()
+        os.rename(fname+'.tmp', fname)
+        return "downloaded!"
+
+def downloadCiteULikePDFs(path2save, user='user', cookie=None):
+    """
+        Goes through all the entries in the CiteULikeDictionary and
+        downloads the PDF files stored, using the BibTeX id as 
+        filename. Requires Firefox cookies.
+    """
+    refs = getCiteULikeDictionary(user)
+    if cookie == None:
+        cookie = getCiteULikeCookie()
+    pdfPaths = {}
+    if not os.path.exists(path2save):
+        os.mkdir(path2save)
+    for refKey in sorted(refs.keys()):
+        ref = refs[refKey]
+        fname = path2save + '/%s.pdf'%(refKey,)
+        try:
+            sys.stdout.write( "Downloading %s ... "%(refKey,) )
+            refPath = 'http://citeulike.org/' + ref['userfiles'][-1]['path']
+            sys.stdout.flush()
+            ec = safeDownloadPDF(refPath, fname, cookie=cookie)
+            sys.stdout.write( ec+'\n' )
+            sys.stdout.flush()
+        except KeyError as e:
+            sys.stdout.write( "was not found (or you have no access).\n" )
+            sys.stdout.flush()
+        except Exception as e:
+            print 'Something went terribly wrong.. ', e
 
 
+
+# MAIN EXECUTION STARTS
 if __name__ == '__main__':
     import argparse
 
@@ -123,19 +165,25 @@ if __name__ == '__main__':
         default=False, \
         help='Save CiteULike JSON file [default:./${user}.json]')
 
+    parser.add_argument('-p', '--pdf', action='store_true', 
+        default=False, \
+        help='Save PDF files of a CiteULike account (requires Firefox cookies). [default:./${user}_pdf/]')
+
     parser.add_argument('-o', '--output', dest='output', default=None, \
-                help='Path to save CiteULike BibTeX/JSON file [default:./${user}.{json,bib}]')
+                help='Path to save CiteULike BibTeX/JSON file [default:./${user}{.json,.bib,_pdf}]')
 
     # Read and curate argument
     args = parser.parse_args()
-    user, bibtexDL, jsonDL, output = args.user, args.bibtex, args.json, args.output
-    if not (bibtexDL or jsonDL):
+    user, bibtexDL, jsonDL, pdfDL, output = \
+            args.user, args.bibtex, args.json, args.pdf, args.output
+    if not (bibtexDL or jsonDL or pdfDL):
         print "No action defined."
     if output == None:
         output = './'+user
     elif output[-5:].split('.')[-1] in ('json', 'bib'):
         output = output[:-5] + output[-5:].replace('.bib', '').replace('.json', '')
 
+    # Download files, each one with each own argument.
     try:
         if jsonDL:
             text_file = open(output + '.json', "w")
@@ -147,6 +195,9 @@ if __name__ == '__main__':
             text_file.write(getCiteULikeBibTeX(user))
             text_file.close()
             print 'BibTeX file saved to', output + '.bib'
+        if pdfDL:
+            print 'Trying to download pdf files for user', user,'...'
+            downloadCiteULikePDFs(output + '_pdf', user=user)
     except urllib2.HTTPError as e:
         print e
     except Exception as e:
