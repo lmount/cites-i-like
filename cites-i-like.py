@@ -89,7 +89,7 @@ def getCiteULikeBibTeX(user='user', cookie=None):
     string with the contents. Does not require a cookie.
         getCiteULikeBibTeX(user='user') -> string
     """
-    url = 'http://www.citeulike.org/bibtex/'+user
+    url = 'http://www.citeulike.org/bibtex/user/'+user
     if cookie==None:
         cookie = getCiteULikeCookie()
     return downloadFile(url, cookie)
@@ -163,7 +163,7 @@ if __name__ == '__main__':
 
     parser.add_argument('-b', '--bibtex', action='store_true', 
         default=False, \
-        help='Save CiteULike JSON file [default:./${user}.json]')
+        help='Save CiteULike BibTex file [default:./${user}.bib]')
 
     parser.add_argument('-p', '--pdf', action='store_true', 
         default=False, \
