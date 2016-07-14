@@ -12,7 +12,7 @@ optional arguments:
   -h, --help            show this help message and exit
   -u USER, --user USER  CiteULike username [required]
   -j, --json            Save CiteULike JSON file [default:./${user}.json]
-  -b, --bibtex          Save CiteULike JSON file [default:./${user}.json]
+  -b, --bibtex          Save CiteULike BibTex file [default:./${user}.bib]
   -p, --pdf             Save PDF files of a CiteULike account (requires
                         Firefox cookies). [default:./${user}_pdf/]
   -o OUTPUT, --output OUTPUT
